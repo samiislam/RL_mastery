@@ -19,9 +19,9 @@
 
 ## 🚀 Phase 0: Setup & Mindset (Day 0)
 
-- [ ] Python 3.10+, VSCode or Jupyter
-- [ ] Install PyTorch, Gymnasium, Stable-Baselines3
-- [ ] Get GPU access (Google Colab Pro / local GPU)
+- [✅] Python 3.10+, VSCode or Jupyter
+- [✅] Install PyTorch, Gymnasium, Stable-Baselines3
+- [✅] Get GPU access (Google Colab Pro / local GPU)
 
 ```bash
 pip install torch gymnasium[box2d] stable-baselines3[extra] wandb
@@ -31,9 +31,9 @@ pip install torch gymnasium[box2d] stable-baselines3[extra] wandb
 
 ## 📘 Phase 1: RL Fundamentals (Days 1–14)
 
-- [ ] ✅ Write MDP simulator
-- [ ] ✅ Tabular Q-learning from scratch
-- [ ] ✅ Solve FrozenLake-v1
+- [ ] Write MDP simulator
+- [ ] Tabular Q-learning from scratch
+- [ ] Solve FrozenLake-v1
 
 **Resources:**
 - Sutton & Barto Book (Ch. 1–6)
@@ -45,9 +45,9 @@ pip install torch gymnasium[box2d] stable-baselines3[extra] wandb
 
 ## 🧠 Phase 2: Deep RL (Days 15–40)
 
-- [ ] ✅ DQN with experience replay
-- [ ] ✅ Policy Gradient (REINFORCE)
-- [ ] ✅ PPO on LunarLander-v2
+- [ ] DQN with experience replay
+- [ ] Policy Gradient (REINFORCE)
+- [ ] PPO on LunarLander-v2
 
 **Resources:**
 - DQN Paper (Mnih et al. 2015)
@@ -59,9 +59,9 @@ pip install torch gymnasium[box2d] stable-baselines3[extra] wandb
 
 ## 🔬 Phase 3: Advanced RL (Days 41–70)
 
-- [ ] ✅ SAC on Pendulum/BipedalWalker
-- [ ] ✅ TD3 implementation
-- [ ] ✅ Multi-agent gridworld w/ PettingZoo
+- [ ] SAC on Pendulum/BipedalWalker
+- [ ] TD3 implementation
+- [ ] Multi-agent gridworld w/ PettingZoo
 
 **Resources:**
 - "Deep RL Hands-On" Book (Ch. 7–17)
@@ -73,8 +73,8 @@ pip install torch gymnasium[box2d] stable-baselines3[extra] wandb
 
 ## 🧪 Phase 4: Research & Custom Envs (Days 71–85)
 
-- [ ] ✅ Design your own Gymnasium environment
-- [ ] ✅ Reimplement RL paper from scratch
+- [ ] Design your own Gymnasium environment
+- [ ] Reimplement RL paper from scratch
 
 **Resources:**
 - Gymnasium Custom Env Guide
@@ -86,9 +86,9 @@ pip install torch gymnasium[box2d] stable-baselines3[extra] wandb
 
 ## 🧑‍🔬 Phase 5: Portfolio & Mastery (Days 86–90+)
 
-- [ ] ✅ Build RL project with real-world relevance
-- [ ] ✅ Write blog or tutorial
-- [ ] ✅ Push everything to GitHub + Colab
+- [ ] Build RL project with real-world relevance
+- [ ] Write blog or tutorial
+- [ ] Push everything to GitHub + Colab
 
 **Ideas:**
 - RL for Neural Architecture Search
