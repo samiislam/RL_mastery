@@ -271,6 +271,31 @@ def process_bandit_problem_action_values(epsilon=0.0, num_sets=2000, num_steps=1
 
     return (av_init, epsilon, avg_rewards, optimal_action_pct)
 
+def argmax_ucb(num_arms, t, Q, N, ucb_c):
+    # Calculate UCB values for all actions
+    # If N(a) = 0, then a is considered to be a maximizing action
+    ucb_values = np.zeros(num_arms)
+    for i in range(num_arms):
+        if N[i] == 0:
+            # Untried actions are considered maximizing
+            ucb_values[i] = float('inf')
+        else:
+            # Standard UCB formula: Q(a) + c * sqrt(ln(t) / N(a))
+            ucb_values[i] = Q[i] + ucb_c * np.sqrt(np.log(t + 1) / N[i])
+    
+    # Handle ties by randomly choosing among actions with highest UCB value
+    max_ucb = np.max(ucb_values)
+    ties = np.flatnonzero(ucb_values == max_ucb)
+    return int(np.random.choice(ties))
+
+def argmax_q(Q):
+    # randomly choose an action from the actions with the highest Q-value
+    # (In the book (p. 27) it says we should pick the action with the highest 
+    # Q-value but we can have multiple actions with the highest Q-value)
+    max_q = np.max(Q)
+    ties = np.flatnonzero(Q == max_q)
+    return int(np.random.choice(ties))
+
 def process_bandit_problem_ucb(epsilon=0.0, num_sets=2000, num_steps=1000, av_init=0.0, ucb_c=0):
 
     np.random.seed(37)
@@ -309,30 +334,9 @@ def process_bandit_problem_ucb(epsilon=0.0, num_sets=2000, num_steps=1000, av_in
             else:
                 # UCB - upper confidence bound
                 if ucb_c > 0:
-                    # Calculate UCB values for all actions
-                    # If N(a) = 0, then a is considered to be a maximizing action
-                    ucb_values = np.zeros(num_arms)
-                    for i in range(num_arms):
-                        if N[i] == 0:
-                            # Untried actions are considered maximizing
-                            ucb_values[i] = float('inf')
-                        else:
-                            # Standard UCB formula: Q(a) + c * sqrt(ln(t) / N(a))
-                            ucb_values[i] = Q[i] + ucb_c * np.sqrt(np.log(t + 1) / N[i])
-                    
-                    # Handle ties by randomly choosing among actions with highest UCB value
-                    max_ucb = np.max(ucb_values)
-                    ties = np.flatnonzero(ucb_values == max_ucb)
-                    a = int(np.random.choice(ties))
-                    
+                    a = argmax_ucb(num_arms, t, Q, N, ucb_c)
                 else:
-                    # randomly choose an action from the actions with the highest Q-value
-                    # (In the book (p. 27) it says we should pick the action with the highest 
-                    # Q-value but we can have multiple actions with the highest Q-value)
-                    max_q = np.max(Q)
-                    ties = np.flatnonzero(Q == max_q)
-                    a = int(np.random.choice(ties))
-               
+                    a = argmax_q(Q)
 
             # sample reward chosen from a normal distribution with mean q_star[a] and standard deviation 1.0
             # The reward variance is 1.0
