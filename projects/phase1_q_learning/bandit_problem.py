@@ -304,7 +304,6 @@ def process_bandit_problem_ucb(epsilon=0.0, num_sets=2000, num_steps=1000, av_in
     # - 2000 independent bandit problems
     # - 1000 time steps per problem
     # - q*(a) ~ N(0, 1) fixed per problem; rewards R_t ~ N(q*(A_t), 1)
-    # - epsilon-greedy with sample-average updates
     # - report average reward per step and % optimal action over time
 
     num_arms = 10
@@ -356,3 +355,90 @@ def process_bandit_problem_ucb(epsilon=0.0, num_sets=2000, num_steps=1000, av_in
     optimal_action_pct = 100.0 * optimal_action_pct / num_sets
 
     return (f'UCB c={ucb_c}' if ucb_c > 0 else f'ε={epsilon}', avg_rewards, optimal_action_pct)
+
+def softmax_all(H):
+    """
+    Compute softmax for all indices at once
+    
+    Parameters:
+    H : array-like, shape (k,)
+        Input values H(0), H(1), ..., H(k-1)
+        
+    Returns:
+    numpy.ndarray, shape (k,)
+        Softmax probabilities for all indices
+    """   
+    # Subtract max for numerical stability
+    H_shifted = H - np.max(H)
+    
+    # Compute exponentials
+    exp_H = np.exp(H_shifted)
+    
+    # Return normalized probabilities
+    return exp_H / np.sum(exp_H)
+
+def process_bandit_problem_gradient(epsilon=0.0, num_sets=2000, num_steps=1000, av_init=0.0, step_size=0.0, use_baseline=False):
+
+    np.random.seed(37)
+
+    # Standard 10-armed bandit testbed (Sutton & Barto):
+    # - 2000 independent bandit problems
+    # - 1000 time steps per problem
+    # - q*(a) ~ N(0, 1) fixed per problem; rewards R_t ~ N(q*(A_t), 1)
+    # - report average reward per step and % optimal action over time
+
+    num_arms = 10
+
+    total_rewards = np.zeros(num_steps, dtype=float)
+    optimal_action_pct = np.zeros(num_steps, dtype=float)
+
+    for _ in range(num_sets):
+        # generate the true q-values for the bandit problem
+        q_star = np.random.normal(4.0, 1.0, size=num_arms)
+        # find the optimal action
+        optimal_a = int(np.argmax(q_star))
+
+        # initialize the H-values (preferences) - all zero initially
+        H = np.zeros(num_arms, dtype=float)
+        # For baseline calculation
+        avg_reward = 0.0  # Running average of rewards
+
+        for t in range(num_steps):
+            # Calculate action probabilities using softmax
+            p_all = softmax_all(H)
+            
+            # Select action probabilistically according to softmax distribution
+            if np.random.rand() < epsilon:
+                # Random exploration
+                a = np.random.randint(num_arms)
+            else:
+                # Sample from the softmax distribution
+                a = int(np.random.choice(num_arms, p=p_all))
+
+            # sample reward chosen from a normal distribution with mean q_star[a] and standard deviation 1.0
+            r = np.random.normal(q_star[a], 1.0)
+            
+            # Update running average of rewards for baseline
+            avg_reward += (r - avg_reward) / (t + 1)
+            
+            # Update H-values (preferences) using gradient bandit update rule
+            indicator = np.zeros(num_arms, dtype=float)
+            indicator[a] = 1.0
+            
+            if use_baseline:
+                # With baseline: H_{t+1}(a) = H_t(a) + α(R_t - R̄_t)(1_{a=A_t} - π_t(a))
+                H = H + step_size * (r - avg_reward) * (indicator - p_all)
+            else:
+                # Without baseline: H_{t+1}(a) = H_t(a) + α(R_t)(1_{a=A_t} - π_t(a))
+                H = H + step_size * r * (indicator - p_all)
+
+            # accumulate metrics
+            total_rewards[t] += r
+            if a == optimal_a:
+                optimal_action_pct[t] += 1
+
+    # average over problems
+    avg_rewards = total_rewards / num_sets
+    optimal_action_pct = 100.0 * optimal_action_pct / num_sets
+
+    return (f'α={step_size} {"with baseline" if use_baseline else "without baseline"}', avg_rewards, optimal_action_pct)
