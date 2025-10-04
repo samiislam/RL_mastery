@@ -45,7 +45,7 @@ pip install torch gymnasium[box2d] stable-baselines3[extra] wandb
 
 ## 🧠 Phase 2: Deep RL (Days 15–40)
 
-- [ ] DQN with experience replay
+- [✅] DQN with experience replay
 - [ ] Policy Gradient (REINFORCE)
 - [ ] PPO on LunarLander-v2
 
