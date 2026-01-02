@@ -32,14 +32,14 @@ pip install torch gymnasium[box2d] stable-baselines3[extra] wandb
 ## 📘 Phase 1: RL Fundamentals (Days 1–14)
 
 - [ ] Write MDP simulator
-- [ ] Tabular Q-learning from scratch
+- [✅] Tabular Q-learning from scratch
 - [ ] Solve FrozenLake-v1
 
 **Resources:**
 - Sutton & Barto Book (Ch. 1–6)
 - David Silver Lectures (1–4)
 
-📁 `projects/phase1_q_learning/`
+📁 `projects/phase1_q_learning_n_step_TD/`
 
 ---
 
